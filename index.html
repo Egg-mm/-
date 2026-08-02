@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>欢迎来到熊的世界</title>
+    <style>  
+      body {
+        margin: 0;
+      }
+      /* 小熊浮动动画 */
+   @keyframes bearShake {
+    0% {transform: rotate(-3deg) translateY(0px);}
+    50% {transform: rotate(3deg) translateY(-5px);}
+    100% {transform: rotate(-3deg) translateY(0px);}
+}
+    </style>
+  </head>
+  <body>
+    <div style="
+    background-color:#f5f5f5;
+    text-align:center;
+    padding:30px 20px;
+    border-radius:12px;
+    margin:30px auto;
+    max-width:500px;
+    ">
+    <img src='https://ts2.tc.mm.bing.net/th/id/OIP-C.exRk6JR9KKK3nGY53FcKqAHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'
+         alt="自嘲熊" 
+         width='150px' 
+         height='150px'
+         style="display:block;
+        margin: 0 auto;
+        border-radius:16px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.08);
+        background-color:#ffffff;
+        padding:8px;
+        animation: bearShake 3.2s ease-in-out infinite;"
+         > 
+    </div>
+
+    <!-- 右下角大号水印 -->
+    <div style="position:fixed; 
+    right:50px;
+    bottom:20px; 
+    width:50px; 
+    opacity:0.15; 
+    z-index:-1; 
+    pointer-events:none;">
+    <img src="https://c-ssl.dtstatic.com/uploads/blog/202408/22/DWS7G5GWUd641E1.thumb.1000_0.jpeg" 
+    style="width:100%;">
+    </div>
+
+    <div style="position:fixed; 
+    left:50px;
+    bottom:20px; 
+    width:50px; 
+    opacity:0.15; 
+    z-index:-1; 
+    pointer-events:none;">
+    <img src="https://c-ssl.dtstatic.com/uploads/blog/202408/22/DWS7G5GWUd641E1.thumb.1000_0.jpeg" 
+    style="width:100%;">
+    </div>
+
+    <div style="
+    max-width:700px;
+    margin: 30px auto;
+    padding: 15px;
+    line-height: 1.7;
+    font-size:20px;
+    ">
+    <p>🎵你好你好，我是一只熊——</p>
+    <p>(●ˇ∀ˇ●)我不只是一只白熊~</p>
+    <p>🐻我是红橙黄绿青蓝紫的熊！</p>
+    <p>👣当然我还有棕熊形态</p>
+    <p>=￣ω￣=快来蛋床看看肥肥棕熊啊</p>
+    </div>
+    <div style="
+    background-color: #aae8dfd2;
+    text-align: center;
+    padding: 40px;
+    font-size: 24px;
+    ">
+    <p>自嘲熊的网站</p>
+    <a href="链接" style="text-decoration:none;
+    color:#a682ea;transition:0.2s;"
+     onmouseover="this.style.color='#543092';
+     this.style.transform='scale(1.05)';
+     display='inline-block'" 
+     onmouseout="this.style.color='#784ec8';
+     this.style.transform='scale(1)'">
+     熊的链接</a>
+    </div>
+</html>
