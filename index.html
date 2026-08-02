@@ -13,7 +13,14 @@
     0% {transform: rotate(-3deg) translateY(0px);}
     50% {transform: rotate(3deg) translateY(-5px);}
     100% {transform: rotate(-3deg) translateY(0px);}
-}
+    }
+    .music-box{
+    margin-top:30px;
+    }
+    .music-box iframe{
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
     </style>
   </head>
   <body>
@@ -37,6 +44,17 @@
         padding:8px;
         animation: bearShake 3.2s ease-in-out infinite;"
          > 
+        <!-- 网易云音乐播放器 -->
+        <div class="music-box">
+        <iframe frameborder="no" 
+        border="0" 
+        marginwidth="0" 
+        marginheight="0" 
+        width="330" 
+        height="86" 
+        src="https://music.163.com/song/media/outer/url?id=2071452224.mp3">
+        </iframe>
+        </div>
     </div>
 
     <!-- 右下角大号水印 -->
@@ -82,7 +100,7 @@
     font-size: 24px;
     ">
     <p>自嘲熊的网站</p>
-    <a href="链接" style="text-decoration:none;
+    <a href="https://nagano-market.jp/zh-hans/collections/kuma" style="text-decoration:none;
     color:#a682ea;transition:0.2s;"
      onmouseover="this.style.color='#543092';
      this.style.transform='scale(1.05)';
