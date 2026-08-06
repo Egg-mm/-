@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>熊</title>
+    <style>
+        :root {
+            --bg: #fdf6f0;
+            --bear-border: #c4956a;
+            --bear-border-outer: #e0c9b0;
+            --bubble-bg: #fffefb;
+            --text-dark: #4a3728;
+            --text-light: #6b5544;
+            --btn-hello: #a8d8b9;
+            --btn-hello-hover: #8cc9a0;
+            --btn-tummy: #f7c59f;
+            --btn-tummy-hover: #f3b27a;
+            --btn-face: #f4b8c1;
+            --btn-face-hover: #f0a0ac;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.10);
+            --shadow-bubble: 0 6px 24px rgba(0, 0, 0, 0.09);
+            --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg);
+            font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* 背景装饰 */
+        .bg-decoration {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+            animation: floatAround 18s ease-in-out infinite;
+        }
+        .bg-decoration.d1 {
+            top: 10%;
+            left: 8%;
+            font-size: 2.2rem;
+            animation-delay: 0s;
+            animation-duration: 16s;
+        }
+        .bg-decoration.d2 {
+            top: 18%;
+            right: 10%;
+            font-size: 1.8rem;
+            animation-delay: -5s;
+            animation-duration: 20s;
+        }
+        .bg-decoration.d3 {
+            bottom: 15%;
+            left: 12%;
+            font-size: 1.6rem;
+            animation-delay: -9s;
+            animation-duration: 19s;
+        }
+        .bg-decoration.d4 {
+            bottom: 20%;
+            right: 8%;
+            font-size: 2rem;
+            animation-delay: -3s;
+            animation-duration: 17s;
+        }
+        .bg-decoration.d5 {
+            top: 40%;
+            left: 4%;
+            font-size: 1.4rem;
+            animation-delay: -7s;
+            animation-duration: 22s;
+        }
+        .bg-decoration.d6 {
+            top: 35%;
+            right: 5%;
+            font-size: 1.5rem;
+            animation-delay: -11s;
+            animation-duration: 21s;
+        }
+
+        @keyframes floatAround {
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+            15% {
+                transform: translate(18px, -22px) rotate(6deg) scale(1.08);
+            }
+            30% {
+                transform: translate(-12px, -30px) rotate(-3deg) scale(0.94);
+            }
+            45% {
+                transform: translate(-20px, 10px) rotate(-7deg) scale(1.05);
+            }
+            60% {
+                transform: translate(14px, 24px) rotate(4deg) scale(0.96);
+            }
+            75% {
+                transform: translate(22px, -8px) rotate(8deg) scale(1.03);
+            }
+            90% {
+                transform: translate(-16px, -16px) rotate(-5deg) scale(0.98);
+            }
+        }
+
+        /* 主容器 */
+        .main-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0px;
+        }
+
+        /* 熊图片容器 */
+        .bear-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 圆形外圈装饰环 */
+        .bear-outer-ring {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            border: 3px dashed var(--bear-border-outer);
+            pointer-events: none;
+            animation: ringRotate 30s linear infinite;
+            opacity: 0.7;
+        }
+        @keyframes ringRotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 熊图片 */
+        .bear-image-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.35s var(--transition-bounce), box-shadow 0.35s var(--transition-smooth);
+            z-index: 2;
+            box-shadow: 0 0 0 5px var(--bear-border), 0 0 0 10px rgba(196, 149, 106, 0.25), var(--shadow-medium);
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bear-image-container:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 0 6px var(--bear-border), 0 0 0 12px rgba(196, 149, 106, 0.35), 0 12px 40px rgba(0, 0, 0, 0.13);
+        }
+        .bear-image-container:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 0 5px var(--bear-border), 0 0 0 10px rgba(196, 149, 106, 0.2), 0 2px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.15s var(--transition-smooth), box-shadow 0.15s var(--transition-smooth);
+        }
+        /* 点击后的脉冲提示 */
+        .bear-image-container.pulse-hint {
+            animation: pulseHint 0.7s ease-out;
+        }
+        @keyframes pulseHint {
+            0% {
+                box-shadow: 0 0 0 5px var(--bear-border), 0 0 0 10px rgba(196, 149, 106, 0.25), var(--shadow-medium);
+            }
+            40% {
+                box-shadow: 0 0 0 5px var(--bear-border), 0 0 0 28px rgba(196, 149, 106, 0.05), 0 16px 48px rgba(0, 0, 0, 0.16);
+            }
+            100% {
+                box-shadow: 0 0 0 5px var(--bear-border), 0 0 0 10px rgba(196, 149, 106, 0.25), var(--shadow-medium);
+            }
+        }
+
+        .bear-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            pointer-events: none;
+            transition: filter 0.3s ease;
+        }
+        /* 图片加载失败时的占位 */
+        .bear-image-fallback {
+            display: none;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e8d5c4, #d4b896);
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        /* 熊的动画状态 */
+        .bear-image-container.bear-bounce {
+            animation: bearBounce 0.6s var(--transition-bounce);
+        }
+        @keyframes bearBounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            25% {
+                transform: translateY(-18px);
+            }
+            50% {
+                transform: translateY(-6px);
+            }
+            70% {
+                transform: translateY(-14px);
+            }
+            85% {
+                transform: translateY(-3px);
+            }
+        }
+        .bear-image-container.bear-squish {
+            animation: bearSquish 0.5s ease-in-out;
+        }
+        @keyframes bearSquish {
+            0%,
+            100% {
+                transform: scaleX(1) scaleY(1);
+            }
+            30% {
+                transform: scaleX(1.12) scaleY(0.85);
+            }
+            55% {
+                transform: scaleX(0.93) scaleY(1.06);
+            }
+            75% {
+                transform: scaleX(1.03) scaleY(0.96);
+            }
+            90% {
+                transform: scaleX(0.98) scaleY(1.01);
+            }
+        }
+        .bear-image-container.bear-wobble {
+            animation: bearWobble 0.55s ease-in-out;
+        }
+        @keyframes bearWobble {
+            0%,
+            100% {
+                transform: rotate(0);
+            }
+            15% {
+                transform: rotate(8deg);
+            }
+            30% {
+                transform: rotate(-7deg);
+            }
+            45% {
+                transform: rotate(5deg);
+            }
+            60% {
+                transform: rotate(-4deg);
+            }
+            75% {
+                transform: rotate(2deg);
+            }
+            90% {
+                transform: rotate(-1deg);
+            }
+        }
+
+        /* 气泡面板 - 位于熊下方 */
+        .bubble-panel {
+            position: absolute;
+            top: calc(100% + 18px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: var(--bubble-bg);
+            border-radius: 22px;
+            box-shadow: var(--shadow-bubble);
+            padding: 16px 22px;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s var(--transition-smooth), transform 0.4s var(--transition-bounce);
+            text-align: center;
+            white-space: nowrap;
+            min-width: 180px;
+        }
+        .bubble-panel::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 14px solid var(--bubble-bg);
+            filter: drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.04));
+        }
+        .bubble-panel.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+        .bubble-panel.expanded {
+            border-radius: 24px;
+            padding: 20px 24px 18px;
+            min-width: 210px;
+            transition: all 0.4s var(--transition-bounce);
+        }
+
+        /* 气泡标题 */
+        .bubble-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        .bubble-title:hover {
+            color: #8b5e3c;
+        }
+        .bubble-title .title-icon {
+            display: inline-block;
+            animation: titleIconBounce 2s ease-in-out infinite;
+            font-size: 1.2rem;
+        }
+        @keyframes titleIconBounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+        .bubble-panel.expanded .bubble-title {
+            cursor: default;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            letter-spacing: 0.02em;
+        }
+        .bubble-panel.expanded .bubble-title .title-icon {
+            animation: none;
+        }
+
+        /* 选项按钮容器 */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            margin-top: 6px;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.45s var(--transition-smooth), opacity 0.3s ease, margin-top 0.35s ease;
+        }
+        .bubble-panel.expanded .options-container {
+            max-height: 200px;
+            opacity: 1;
+            margin-top: 12px;
+        }
+
+        /* 选项按钮 */
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 11px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 0.03em;
+            transition: all 0.25s var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+            color: var(--text-dark);
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            white-space: nowrap;
+        }
+        .option-btn:active {
+            transform: scale(0.94);
+            transition: all 0.1s ease;
+        }
+        .option-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 30px;
+        }
+        .option-btn:hover::after {
+            opacity: 1;
+        }
+
+        .btn-hello {
+            background: var(--btn-hello);
+        }
+        .btn-hello:hover {
+            background: var(--btn-hello-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(140, 201, 160, 0.35);
+        }
+        .btn-tummy {
+            background: var(--btn-tummy);
+        }
+        .btn-tummy:hover {
+            background: var(--btn-tummy-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(243, 178, 122, 0.35);
+        }
+        .btn-face {
+            background: var(--btn-face);
+        }
+        .btn-face:hover {
+            background: var(--btn-face-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(240, 160, 172, 0.35);
+        }
+
+        .option-btn .btn-emoji {
+            margin-right: 5px;
+            font-size: 1.1rem;
+        }
+
+        /* 回复气泡 - 在熊的侧面 */
+        .reply-bubble {
+            position: absolute;
+            top: 30px;
+            right: calc(100% + 22px);
+            background: #fffefb;
+            border-radius: 18px;
+            padding: 12px 18px;
+            box-shadow: var(--shadow-bubble);
+            z-index: 8;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(8px) scale(0.9);
+            transition: opacity 0.35s var(--transition-smooth), transform 0.4s var(--transition-bounce);
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            max-width: 200px;
+            text-align: center;
+            line-height: 1.5;
+            white-space: normal;
+            word-break: break-word;
+        }
+        .reply-bubble::after {
+            content: '';
+            position: absolute;
+            top: 28px;
+            right: -10px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 12px solid #fffefb;
+            filter: drop-shadow(2px 0 3px rgba(0, 0, 0, 0.03));
+        }
+        .reply-bubble.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0) scale(1);
+        }
+        .reply-bubble .reply-emoji {
+            display: block;
+            font-size: 1.6rem;
+            margin-bottom: 2px;
+        }
+
+        /* 移动端：回复气泡显示在熊上方 */
+        @media (max-width: 600px) {
+            .reply-bubble {
+                top: auto;
+                bottom: calc(100% + 16px);
+                right: 50%;
+                transform: translateX(50%) translateY(6px) scale(0.9);
+                max-width: 180px;
+            }
+            .reply-bubble::after {
+                top: auto;
+                bottom: -10px;
+                right: 50%;
+                transform: translateX(50%);
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-top: 12px solid #fffefb;
+                border-bottom: none;
+                filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.03));
+            }
+            .reply-bubble.visible {
+                transform: translateX(50%) translateY(0) scale(1);
+            }
+            .bear-outer-ring {
+                width: 210px;
+                height: 210px;
+            }
+            .bear-image-container {
+                width: 175px;
+                height: 175px;
+            }
+            .bubble-panel {
+                top: calc(100% + 14px);
+                min-width: 160px;
+                padding: 13px 16px;
+                border-radius: 18px;
+            }
+            .bubble-panel.expanded {
+                min-width: 185px;
+                padding: 16px 18px 14px;
+                border-radius: 20px;
+            }
+            .bubble-title {
+                font-size: 0.95rem;
+            }
+            .option-btn {
+                font-size: 0.85rem;
+                padding: 10px 16px;
+            }
+            .options-container {
+                gap: 7px;
+            }
+        }
+        @media (max-width: 380px) {
+            .bear-outer-ring {
+                width: 175px;
+                height: 175px;
+                border-width: 2px;
+            }
+            .bear-image-container {
+                width: 145px;
+                height: 145px;
+            }
+            .bear-image-container {
+                box-shadow: 0 0 0 4px var(--bear-border), 0 0 0 8px rgba(196, 149, 106, 0.2), var(--shadow-medium);
+            }
+            .bear-image-container:hover {
+                box-shadow: 0 0 0 5px var(--bear-border), 0 0 0 10px rgba(196, 149, 106, 0.3), 0 10px 32px rgba(0, 0, 0, 0.12);
+            }
+            .bubble-panel {
+                top: calc(100% + 10px);
+                min-width: 140px;
+                padding: 10px 13px;
+                border-radius: 16px;
+            }
+            .bubble-panel.expanded {
+                min-width: 160px;
+                padding: 13px 14px 11px;
+                border-radius: 18px;
+            }
+            .bubble-title {
+                font-size: 0.82rem;
+            }
+            .option-btn {
+                font-size: 0.78rem;
+                padding: 9px 13px;
+                border-radius: 24px;
+            }
+            .options-container {
+                gap: 6px;
+            }
+            .reply-bubble {
+                max-width: 150px;
+                font-size: 0.78rem;
+                padding: 10px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 背景装饰 -->
+    <div class="bg-decoration d1">🌿</div>
+    <div class="bg-decoration d2">✨</div>
+    <div class="bg-decoration d3">🍃</div>
+    <div class="bg-decoration d4">💫</div>
+    <div class="bg-decoration d5">🌱</div>
+    <div class="bg-decoration d6">🫧</div>
+
+    <!-- 主容器 -->
+    <div class="main-container" id="mainContainer">
+        <!-- 熊的包装器 -->
+        <div class="bear-wrapper" id="bearWrapper">
+            <!-- 圆形外圈装饰 -->
+            <div class="bear-outer-ring"></div>
+
+            <!-- 熊图片 -->
+            <div class="bear-image-container" id="bearContainer" title="点击和熊互动">
+                <img
+                class="bear-image"
+                id="bearImage"
+                src="https://ts1.tc.mm.bing.net/th/id/OIP-C.8NTt4zYnXsmm6QUH1rtvUAHaHd?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
+                alt="自嘲熊"
+                loading="eager"
+                referrerpolicy="no-referrer"
+                onerror="handleImageError()"
+                >
+                <div class="bear-image-fallback" id="bearFallback">🐻</div>
+            </div>
+
+            <!-- 回复气泡（熊的回复） -->
+            <div class="reply-bubble" id="replyBubble">
+                <span class="reply-emoji" id="replyEmoji"></span>
+                <span id="replyText"></span>
+            </div>
+
+            <!-- 交互气泡面板 -->
+            <div class="bubble-panel" id="bubblePanel">
+                <div class="bubble-title" id="bubbleTitle">
+                    <span class="title-icon">💭</span> 想对熊做什么？
+                </div>
+                <div class="options-container" id="optionsContainer">
+                    <button class="option-btn btn-hello" data-action="hello">
+                        <span class="btn-emoji">👋</span> 你好呀熊
+                    </button>
+                    <button class="option-btn btn-tummy" data-action="tummy">
+                        <span class="btn-emoji">🤏</span> 捏捏熊肚子
+                    </button>
+                    <button class="option-btn btn-face" data-action="face">
+                        <span class="btn-emoji">😊</span> 揉揉熊脸
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // DOM元素
+            const bearContainer = document.getElementById('bearContainer');
+            const bearImage = document.getElementById('bearImage');
+            const bearFallback = document.getElementById('bearFallback');
+            const bubblePanel = document.getElementById('bubblePanel');
+            const bubbleTitle = document.getElementById('bubbleTitle');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const replyBubble = document.getElementById('replyBubble');
+            const replyEmoji = document.getElementById('replyEmoji');
+            const replyText = document.getElementById('replyText');
+            const bearWrapper = document.getElementById('bearWrapper');
+            const mainContainer = document.getElementById('mainContainer');
+
+            // 状态管理
+            let panelState = 'idle'; // 'idle' | 'prompt' | 'options' | 'replying'
+            let replyTimer = null;
+            let isAnimating = false;
+
+            // 回复内容配置
+            const replies = {
+                hello: {
+                    emoji: '👋',
+                    texts: [
+                        '嗨...今天也是摆烂的一天呢 🐻',
+                        '嗯...你好...（社恐发作中）',
+                        '嗨~ 虽然不是很想说话但还是要礼貌回应...',
+                        '啊，有人来了...勉强打个招呼吧 👋😅',
+                    ],
+                },
+                tummy: {
+                    emoji: '😖',
+                    texts: [
+                        '嘶——全是昨晚的泡面...🍜',
+                        '别捏了...肚子都是奶茶撑的 🧋',
+                        '呜呜，这层脂肪我自己都嫌弃...',
+                        '捏到的是我的自卑...和昨天吃的炸鸡 🍗',
+                    ],
+                },
+                face: {
+                    emoji: '😳',
+                    texts: [
+                        '脸要变形啦...虽然本来也不好看',
+                        '揉吧揉吧，反正这脸也不值钱...',
+                        '轻点儿...这张脸已经够垮了 😩',
+                        '啊...被揉得有点舒服是怎么回事...（羞耻）',
+                    ],
+                },
+            };
+
+            // 获取随机回复
+            function getRandomReply(action) {
+                const texts = replies[action].texts;
+                return texts[Math.floor(Math.random() * texts.length)];
+            }
+
+            // 图片加载失败处理
+            window.handleImageError = function() {
+                bearImage.style.display = 'none';
+                bearFallback.style.display = 'flex';
+                console.warn('熊图片加载失败，使用备用emoji。原始URL:', bearImage.src);
+            };
+
+            // 也尝试在JS中检测图片加载
+            const testImg = new Image();
+            testImg.onload = function() {
+                // 图片加载成功，保持不变
+                bearImage.style.display = 'block';
+                bearFallback.style.display = 'none';
+            };
+            testImg.onerror = function() {
+                // 加载失败
+                bearImage.style.display = 'none';
+                bearFallback.style.display = 'flex';
+            };
+            testImg.src = bearImage.src;
+            // 如果图片已经加载过了（从缓存），重新触发检测
+            if (bearImage.complete) {
+                if (bearImage.naturalWidth === 0) {
+                    bearImage.style.display = 'none';
+                    bearFallback.style.display = 'flex';
+                }
+            }
+
+            // 重置面板状态
+            function resetPanel(delay = 0) {
+                clearTimeout(replyTimer);
+                if (delay > 0) {
+                    setTimeout(() => {
+                        closePanel();
+                    }, delay);
+                } else {
+                    closePanel();
+                }
+            }
+
+            function closePanel() {
+                bubblePanel.classList.remove('expanded', 'visible');
+                optionsContainer.style.maxHeight = '0';
+                optionsContainer.style.opacity = '0';
+                optionsContainer.style.marginTop = '6px';
+                replyBubble.classList.remove('visible');
+                panelState = 'idle';
+                isAnimating = false;
+                // 移除熊的动画类
+                bearContainer.classList.remove('bear-bounce', 'bear-squish', 'bear-wobble', 'pulse-hint');
+            }
+
+            // 显示提示气泡（第一层）
+            function showPrompt() {
+                if (isAnimating && panelState === 'replying') return;
+                if (panelState === 'prompt' || panelState === 'options') {
+                    // 如果已经显示提示或选项，关闭
+                    resetPanel();
+                    return;
+                }
+                closePanel();
+                // 小延迟确保关闭动画完成
+                setTimeout(() => {
+                    bubblePanel.classList.remove('expanded');
+                    bubblePanel.classList.add('visible');
+                    optionsContainer.style.maxHeight = '0';
+                    optionsContainer.style.opacity = '0';
+                    optionsContainer.style.marginTop = '6px';
+                    replyBubble.classList.remove('visible');
+                    panelState = 'prompt';
+                    isAnimating = false;
+                    // 脉冲提示
+                    bearContainer.classList.add('pulse-hint');
+                    setTimeout(() => bearContainer.classList.remove('pulse-hint'), 700);
+                }, 80);
+            }
+
+            // 展开选项（第二层）
+            function expandOptions() {
+                if (panelState !== 'prompt') return;
+                if (isAnimating) return;
+                isAnimating = true;
+                panelState = 'options';
+                bubblePanel.classList.add('expanded');
+                // 触发reflow后设置max-height
+                requestAnimationFrame(() => {
+                    optionsContainer.style.maxHeight = '200px';
+                    optionsContainer.style.opacity = '1';
+                    optionsContainer.style.marginTop = '12px';
+                });
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 450);
+            }
+
+            // 处理选项点击
+            function handleOptionClick(action) {
+                if (panelState !== 'options') return;
+                if (isAnimating) return;
+                isAnimating = true;
+                panelState = 'replying';
+
+                // 清除之前的回复定时器
+                clearTimeout(replyTimer);
+
+                // 获取回复内容
+                const reply = getRandomReply(action);
+                const emoji = replies[action].emoji;
+
+                // 显示回复
+                replyEmoji.textContent = emoji;
+                replyText.textContent = reply;
+                replyBubble.classList.add('visible');
+
+                // 熊的动画
+                bearContainer.classList.remove('bear-bounce', 'bear-squish', 'bear-wobble', 'pulse-hint');
+                // 强制回流
+                void bearContainer.offsetWidth;
+
+                switch (action) {
+                    case 'hello':
+                        bearContainer.classList.add('bear-bounce');
+                        break;
+                    case 'tummy':
+                        bearContainer.classList.add('bear-squish');
+                        break;
+                    case 'face':
+                        bearContainer.classList.add('bear-wobble');
+                        break;
+                }
+
+                // 动画结束后清理
+                const animDuration = action === 'hello' ? 600 : action === 'tummy' ? 500 : 550;
+                setTimeout(() => {
+                    bearContainer.classList.remove('bear-bounce', 'bear-squish', 'bear-wobble');
+                }, animDuration);
+
+                // 回复气泡显示一段时间后自动消失，但选项面板保持
+                replyTimer = setTimeout(() => {
+                    replyBubble.classList.remove('visible');
+                    panelState = 'options';
+                    isAnimating = false;
+                }, 2800);
+
+                // 允许在回复期间也能操作（但选项面板仍在）
+                setTimeout(() => {
+                    if (panelState === 'replying') {
+                        isAnimating = false;
+                        // 回复气泡还在显示，但用户可以继续点击选项
+                    }
+                }, animDuration + 100);
+            }
+
+            // === 事件监听 ===
+
+            // 点击熊图片 → 第一层交互：弹出"想对熊做什么"
+            bearContainer.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (panelState === 'idle') {
+                    showPrompt();
+                } else if (panelState === 'prompt') {
+                    // 如果已经显示提示，再次点击熊关闭
+                    resetPanel();
+                } else if (panelState === 'options' || panelState === 'replying') {
+                    // 如果选项已展开或正在回复，点击熊关闭所有
+                    resetPanel();
+                }
+            });
+
+            // 点击气泡标题 → 第二层交互：展开选项
+            bubbleTitle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (panelState === 'prompt') {
+                    expandOptions();
+                }
+            });
+
+            // 点击选项按钮
+            optionsContainer.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const btn = e.target.closest('.option-btn');
+                if (!btn) return;
+                const action = btn.dataset.action;
+                if (action && (panelState === 'options' || panelState === 'replying')) {
+                    // 允许在回复期间也能点击其他选项
+                    if (panelState === 'replying') {
+                        clearTimeout(replyTimer);
+                        replyBubble.classList.remove('visible');
+                        panelState = 'options';
+                        isAnimating = false;
+                        // 短暂延迟后处理新点击
+                        setTimeout(() => {
+                            handleOptionClick(action);
+                        }, 100);
+                    } else {
+                        handleOptionClick(action);
+                    }
+                }
+            });
+
+            // 点击面板外部区域关闭
+            document.addEventListener('click', function(e) {
+                if (panelState === 'idle') return;
+                // 检查点击是否在面板、熊容器、回复气泡之外
+                const clickedOnPanel = bubblePanel.contains(e.target);
+                const clickedOnBear = bearContainer.contains(e.target);
+                const clickedOnReply = replyBubble.contains(e.target);
+
+                if (!clickedOnPanel && !clickedOnBear && !clickedOnReply) {
+                    resetPanel();
+                }
+            });
+
+            // 移动端触摸事件优化
+            bearContainer.addEventListener('touchend', function(e) {
+                // 防止双击缩放
+                e.preventDefault();
+            }, { passive: false });
+
+            // 键盘支持
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    resetPanel();
+                }
+                if (e.key === 'Enter' && panelState === 'prompt') {
+                    expandOptions();
+                }
+                if (panelState === 'options' || panelState === 'replying') {
+                    if (e.key === '1') {
+                        e.preventDefault();
+                        handleOptionClick('hello');
+                    } else if (e.key === '2') {
+                        e.preventDefault();
+                        handleOptionClick('tummy');
+                    } else if (e.key === '3') {
+                        e.preventDefault();
+                        handleOptionClick('face');
+                    }
+                }
+            });
+
+            // 初始加载时给熊一个微妙的入场动画
+            setTimeout(() => {
+                bearContainer.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.6s ease';
+                bearContainer.style.transform = 'scale(1)';
+            }, 100);
+
+            console.log('🐻 自嘲熊准备好啦！点击熊开始互动吧~');
+            console.log('💡 提示：点击熊 → 弹出"想对熊做什么" → 点击气泡展开选项');
+            console.log('⌨️  键盘快捷键：按 1/2/3 选择选项，按 Esc 关闭面板');
+        })();
+    </script>
+</body>
+</html>
